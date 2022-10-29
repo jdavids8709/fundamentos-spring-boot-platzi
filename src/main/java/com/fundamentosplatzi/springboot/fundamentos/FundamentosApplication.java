@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -66,13 +67,34 @@ public class FundamentosApplication implements CommandLineRunner {
             User user = new User("David", "davidsalcedo87@gmail.com", LocalDate.of(1987, 9, 30));
             User user2 = new User("Carolina", "car@gmail.com", LocalDate.of(1986, 9, 27));
             User user3 = new User("Karen", "karen@gmail.com", LocalDate.of(2013, 8, 10));
-            User user4 = new User("Jose", "jose@gmail.com", LocalDate.of(1987, 9, 30));
+            User user4 = new User("David Jose", "jose@gmail.com", LocalDate.of(1987, 9, 30));
             User user5 = new User("Maria", "maria@gmail.com", LocalDate.of(1956, 10, 06));
             List<User> list = Arrays.asList(user, user2, user3, user4, user5);
 
             //            list.forEach(userRepository::save);
             userRepository.saveAll(list);
-            log.info(userRepository.findByEmai("car2@gmail.com").orElseThrow(() -> new RuntimeException("User no found by email parameter")));
+            log.info(userRepository.findByEmai("car@gmail.com").orElseThrow(() -> new RuntimeException("User no found by email parameter")));
+
+            userRepository.findBySort("Da", Sort.by("id").descending())
+                    .forEach(userFind -> log.info("User is: " + userFind));
+            ;
+
+            userRepository.findByName("David").forEach(userF->log.info("findByName: " +userF));
+
+            log.info(userRepository.findByEmailAndName("car@gmail.com","Carolina").orElseThrow(()-> new RuntimeException(
+                    "findByEmaiAndName no exists")));
+
+            userRepository.findByNameLike("%ar%").forEach(userF->log.info("findByNameLike: " +userF));
+
+            log.info("findByEmailOrName:" +
+                     userRepository.findByEmailOrName("car@gmail.com","Carolina")
+                             .orElseThrow(()-> new RuntimeException("findByEmailOrName no exists")));
+
+            userRepository.findByBirthdayBetween(LocalDate.of(1988,01,01),LocalDate.of(2022,10,29))
+                    .forEach(userF2->log.info("findByBirthdayBetween: " +userF2));
+
+            userRepository.findByNameLikeOrderByIdDesc("%ar%").
+                    forEach(userFind -> log.info("findByNameLikeOrderByDesc: " + userFind));
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
