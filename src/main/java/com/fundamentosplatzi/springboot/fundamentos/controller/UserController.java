@@ -4,6 +4,7 @@ import com.fundamentosplatzi.springboot.fundamentos.dto.ResponseServiceDTO;
 import com.fundamentosplatzi.springboot.fundamentos.entity.User;
 import com.fundamentosplatzi.springboot.fundamentos.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,17 +33,17 @@ public class UserController {
     }
 
 
-//    @ResponseBody
+    @ResponseBody
     @PostMapping("/user")
     public ResponseEntity<ResponseServiceDTO> save(@RequestBody User user) {
         ResponseEntity<ResponseServiceDTO> response = null;
         try {
             User userResp = userService.save(user);
-            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "Usuario creado exitosamente", null, userResp ),
-                    HttpStatus.CREATED);
+            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "Usuario creado exitosamente", null, userResp), HttpStatus.CREATED);
         } catch (Exception e) {
             response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("-1", "Error General del servicio", e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
-        } return response;
+        }
+        return response;
     }
 
     @ResponseBody
@@ -51,8 +52,7 @@ public class UserController {
         ResponseEntity<ResponseServiceDTO> response = null;
         try {
             userService.deleteById(id);
-            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "Usuario eliminado exitosamente", null, null),
-                    HttpStatus.NO_CONTENT);
+            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "Usuario eliminado exitosamente", null, null), HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("-1", "Error General del servicio", e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -65,8 +65,21 @@ public class UserController {
         ResponseEntity<ResponseServiceDTO> response = null;
         try {
             User userResp = userService.update(user, id);
-            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "Usuario actualizado exitosamente", null,
-                    userResp), HttpStatus.OK);
+            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "Usuario actualizado exitosamente", null, userResp), HttpStatus.OK);
+        } catch (Exception e) {
+            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("-1", "Error General del servicio", e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @GetMapping("/users/pageable")
+    public ResponseEntity<ResponseServiceDTO> findAllPageable(@RequestParam int page, @RequestParam int size) {
+        ResponseEntity<ResponseServiceDTO> response = null;
+        List<User> list = null;
+        try {
+            list = userService.findAll(PageRequest.of(page, size));
+            response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("0", "OK", null, list), HttpStatus.OK);
         } catch (Exception e) {
             response = new ResponseEntity<ResponseServiceDTO>(new ResponseServiceDTO("-1", "Error General del servicio", e.getMessage(), null), HttpStatus.INTERNAL_SERVER_ERROR);
         }

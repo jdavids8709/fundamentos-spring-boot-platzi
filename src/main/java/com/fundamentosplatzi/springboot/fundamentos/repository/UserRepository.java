@@ -1,6 +1,7 @@
 package com.fundamentosplatzi.springboot.fundamentos.repository;
 
 import com.fundamentosplatzi.springboot.fundamentos.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByBirthDateBetween(LocalDate begin, LocalDate finish);
 
     List<User> findByNameLikeOrderByIdDesc(String name);
+
 }

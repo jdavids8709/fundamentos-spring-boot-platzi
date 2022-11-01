@@ -5,6 +5,8 @@ import com.fundamentosplatzi.springboot.fundamentos.repository.UserRepository;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -63,6 +65,15 @@ public class UserService implements IUserService {
                         return userRepository.save(user1);
                     }
             ).get();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    public List<User> findAll(Pageable pageable) {
+        try {
+            return userRepository.findAll(pageable).getContent();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;

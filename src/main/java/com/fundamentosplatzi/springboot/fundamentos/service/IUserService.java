@@ -1,6 +1,7 @@
 package com.fundamentosplatzi.springboot.fundamentos.service;
 
 import com.fundamentosplatzi.springboot.fundamentos.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface IUserService {
     public void deleteById(Long id);
 
     public User update(User user, Long id);
+    public List<User> findAll(Pageable pageable);
 }
