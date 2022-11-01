@@ -1,5 +1,7 @@
 package com.fundamentosplatzi.springboot.fundamentos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @Id
@@ -23,18 +26,20 @@ public class User {
     @Column(length = 50)
     private String name;
 
-    @Column(length = 50)
+    @Column(length = 50,unique = true)
     private String email;
 
-    private LocalDate birthday;
+    private LocalDate birthDate;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference (value = "posts")
+    @JsonIgnore
     private List<Post> posts;
 
-    public User( String name, String email, LocalDate birthday) {
+    public User( String name, String email, LocalDate birthDate) {
         this.name = name;
         this.email = email;
-        this.birthday = birthday;
+        this.birthDate = birthDate;
     }
 }
